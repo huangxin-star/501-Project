@@ -72,3 +72,8 @@ chisq.test(UserGender, correct=F)
 subset_data<-customers[c('UserOccupation','ReviewRating')]
 UserOccupation <- table(subset_data)
 chisq.test(UserOccupation, correct=F)
+
+
+#测试能否push
+
+ttt
