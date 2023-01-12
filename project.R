@@ -82,6 +82,7 @@ subset_data<-customers[c('UserOccupation','ReviewRating')]
 UserOccupation <- table(subset_data)
 chisq.test(UserOccupation, correct=F)
 
+
 ## Assignment2 PartB
 male <- length(which(customers$UserGender=='Male'))
 female <- length(which(customers$UserGender=='Female'))
@@ -176,3 +177,9 @@ fviz_cluster(fit.km, data = new,
 
 
 
+=======
+
+#测试能否push
+
+ttt
+>>>>>>> e1801203f443123238b6aa2342cec9cfd37af322
