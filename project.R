@@ -175,11 +175,48 @@ fviz_cluster(fit.km, data = new,
 
 
 
+# wriiten by ZM 
+# 提取需要的列
+customers_cluster=select(customers,ProductCategory.fix,UserGender.fix,UserOccupation.fix,ManufacturerName.fix,ProductPrice.fix,ReviewRating.fix)
+customers_nor<-as.data.frame(scale(customers_cluster))
+bss <- numeric()
+wss <- numeric()
+set.seed(1234)
 
+for(i in 1:10){
+  
+  # For each k, calculate betweenss and tot.withinss
+  bss[i] <- kmeans(customers_nor, centers=i)$betweenss
+  wss[i] <- kmeans(customers_nor, centers=i)$tot.withinss
+  
+}
 
-=======
+# Between-cluster sum of squares vs Choice of k
+p3 <- qplot(1:10, bss, geom=c("point", "line"), 
+            xlab="Number of clusters", ylab="Between-cluster sum of squares") +
+  scale_x_continuous(breaks=seq(0, 10, 1)) +
+  theme_bw()
 
-#测试能否push
+# Total within-cluster sum of squares vs Choice of k
+p4 <- qplot(1:10, wss, geom=c("point", "line"),
+            xlab="Number of clusters", ylab="Total within-cluster sum of squares") +
+  scale_x_continuous(breaks=seq(0, 10, 1)) +
+  theme_bw()
 
-ttt
->>>>>>> e1801203f443123238b6aa2342cec9cfd37af322
+# Subplot
+grid.arrange(p3, p4, ncol=2)
+set.seed(1234)
+cutomers_k3 <- kmeans(customers_nor, centers=3)
+
+aggregate(customers_cluster, by=list(cutomers_k3$cluster), mean)
+
+library(GGally)
+
+# Clustering 
+ggpairs(cbind(customers_cluster, Cluster=as.factor(cutomers_k3$cluster)),
+        columns=1:6, aes(colour=Cluster, alpha=0.5),
+        lower=list(continuous="points"),
+        upper=list(continuous="blank"),
+        axisLabels="none", switch="both") +
+  theme_bw()
+
