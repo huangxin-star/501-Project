@@ -31,7 +31,7 @@ p2<-ggplot(customers,aes(y=RetailerZip))+geom_boxplot(outlier.colour = "red",out
 p3<-ggplot(customers,aes(y=UserAge))+geom_boxplot(outlier.colour = "red",outlier.shape = 8,outlier.size = 4)
 p4<-ggplot(customers,aes(y=ReviewRating))+geom_boxplot(outlier.colour = "red",outlier.shape = 8,outlier.size = 4)
 
-grid.arrange(p1,p2,p3,p4,nrow=2,ncol=2)
+
 
 mean_price=mean(customers$ProductPrice)
 mean_review=mean(customers$ReviewRating)
@@ -191,6 +191,7 @@ for(i in 1:10){
   
 }
 
+
 # Between-cluster sum of squares vs Choice of k
 p3 <- qplot(1:10, bss, geom=c("point", "line"), 
             xlab="Number of clusters", ylab="Between-cluster sum of squares") +
@@ -202,6 +203,8 @@ p4 <- qplot(1:10, wss, geom=c("point", "line"),
             xlab="Number of clusters", ylab="Total within-cluster sum of squares") +
   scale_x_continuous(breaks=seq(0, 10, 1)) +
   theme_bw()
+
+
 
 # Subplot
 grid.arrange(p3, p4, ncol=2)
@@ -219,4 +222,5 @@ ggpairs(cbind(customers_cluster, Cluster=as.factor(cutomers_k3$cluster)),
         upper=list(continuous="blank"),
         axisLabels="none", switch="both") +
   theme_bw()
+
 
