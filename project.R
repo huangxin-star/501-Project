@@ -209,12 +209,6 @@ for(i in 1:10){
   
 }
 
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
-=======
->>>>>>> cf08ec2567e4737040af30c0106092178e303319
 # Between-cluster sum of squares vs Choice of k
 p3 <- qplot(1:10, bss, geom=c("point", "line"), 
             xlab="Number of clusters", ylab="Between-cluster sum of squares") +
@@ -246,8 +240,4 @@ ggpairs(cbind(customers_cluster, Cluster=as.factor(cutomers_k3$cluster)),
         axisLabels="none", switch="both") +
   theme_bw()
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 2f3efee3b85829e8d1f636706144068b7d59638e
->>>>>>> cf08ec2567e4737040af30c0106092178e303319
