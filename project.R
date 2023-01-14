@@ -3,10 +3,12 @@ install.packages("factoextra")
 install.packages("NbClust")
 library(tidyverse)
 library(caret)
+library(corrplot)
 library(cluster)
 library(factoextra)
 library(NbClust)
 library(readxl)
+
 customers<-read_delim('data/Customer Review.csv',delim = ',')
 summary(customers)
 # calculate sd
@@ -137,21 +139,37 @@ ManufacturerName_five <- customers$ManufacturerName == 'Dell'
 customers[ManufacturerName_five, "ManufacturerName.fix"] <- 5
 ManufacturerName_six <- customers$ManufacturerName == 'LG'
 customers[ManufacturerName_six, "ManufacturerName.fix"] <- 6
-
+table <- data.frame(customers$ProductCategory.fix,
+                    customers$ProductPrice,
+                    customers$ManufacturerName.fix,
+                    customers$UserOccupation.fix,
+                    customers$ReviewRating,
+                    customers$UserGender.fix)
+# Correlation matrix 
+corr<-cor(table,method="pearson")
+corrplot(corr)
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(corr,method="color",#调整为正方形
+         col=col(200), #颜色调整
+         type="upper", #保留右上部分
+         order="hclust", #层次聚类
+         addCoef.col = "black", #添加相关系数
+         tl.col="black", tl.srt=45, #修改字体
+         diag=FALSE)#去掉自身相关
 
 # Clusting Test(这里写聚类的代码)
 # 我聚合了一下产品和用户职业
-new <- data_frame(customers$UserOccupation.fix,customers$ProductCategory.fix)
-head(new)
+oc <- data_frame(customers$UserOccupation.fix,customers$ProductCategory.fix)
+head(oc)
 
-d <- dist(new)  # 计算距离 默认欧式距离
+d <- dist(oc)  # 计算距离 默认欧式距离
 fit_average <- hclust(d, method="average") # 聚类
 plot(fit_average, hang = -1,  main = "Average Linkage Clustering")
 
 # 围绕中心点的划分（PAM）
-data(new)
-nu_pam <- pam(new, 2, metric="euclidean")
-fviz_cluster(nu_pam, new)
+data(oc)
+nu_pam <- pam(oc, 2, metric="euclidean")
+fviz_cluster(nu_pam, oc)
 
 #确定聚类个数
 set.seed(123)
@@ -160,12 +178,12 @@ fviz_nbclust(new, kmeans, method = "wss") +
 
 # 第一种制图方式
 fit.km <- kmeans(new, centers = 4, nstart = 25)
-plot(new, col = fit.km$cluster, pch = 19, frame = FALSE,
+plot(oc, col = fit.km$cluster, pch = 19, frame = FALSE,
      main = "K-means with k = 4")
 
 # 第二种（好看）
 points(fit.km$centers, col = 1:2, pch = 8, cex = 3)
-fviz_cluster(fit.km, data = new, 
+fviz_cluster(fit.km, data = oc, 
              ellipse = T, # 增加椭圆
              ellipse.type = "t", # 椭圆类型
              geom = "point", # 只显示点不要文字
@@ -191,7 +209,12 @@ for(i in 1:10){
   
 }
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> cf08ec2567e4737040af30c0106092178e303319
 # Between-cluster sum of squares vs Choice of k
 p3 <- qplot(1:10, bss, geom=c("point", "line"), 
             xlab="Number of clusters", ylab="Between-cluster sum of squares") +
@@ -223,4 +246,8 @@ ggpairs(cbind(customers_cluster, Cluster=as.factor(cutomers_k3$cluster)),
         axisLabels="none", switch="both") +
   theme_bw()
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2f3efee3b85829e8d1f636706144068b7d59638e
+>>>>>>> cf08ec2567e4737040af30c0106092178e303319
