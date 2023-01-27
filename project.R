@@ -1,32 +1,7 @@
-install.packages("flexclust")
-install.packages("factoextra")
-install.packages("NbClust")
 library(tidyverse)
-library(caret)
-library(corrplot)
-library(cluster)
-library(factoextra)
-library(NbClust)
-library(readxl)
-
 customers<-read_delim('data/Customer Review.csv',delim = ',')
 summary(customers)
-# calculate sd
-sd(customers$ProductPrice)
-sd(customers$ReviewRating)
-sd(customers$UserAge)
-# unique category items
-length(unique(customers$RetailerCity))
-length(unique(customers$RetailerState))
-length(unique(customers$UserOccupation))
-length(unique(customers$RetailerZip))
-length(unique(customers$RetailerName))
-length(unique(customers$ManufacturerName))
-length(unique(customers$UserID))
-length(unique(customers$ProductModelName))
-length(unique(customers$ProductCategory))
 # detect outliers
-install.packages(grid)
 library(gridExtra)
 p1<-ggplot(customers,aes(y=ProductPrice))+geom_boxplot(outlier.colour = "red",outlier.shape = 8,outlier.size = 4)
 p2<-ggplot(customers,aes(y=RetailerZip))+geom_boxplot(outlier.colour = "red",outlier.shape = 8,outlier.size = 4)
@@ -47,12 +22,11 @@ IQRCal<-function(Q1,Q3){
   return (result)
 }
 
-price_IQR=IQRCal(349,999)
-review_IQR=IQRCal(4,5)
+price_IQR=IQRCal(quantile(customers$ProductPrice,0.25),quantile(customers$ProductPrice,0.75))
+review_IQR=IQRCal(quantile(customers$ReviewRating,0.25),quantile(customers$ReviewRating,0.75))
+
 #replace the outliers with mean
 customers$ProductPrice.fix<-ifelse(between(customers$ProductPrice,price_IQR[1],price_IQR[2]),customers$ProductPrice,mean_price)
-customers$ReviewRating.fix<-ifelse(between(customers$ReviewRating,review_IQR[1],review_IQR[2]),customers$ReviewRating,mean_review)
-
 ggplot(customers, aes(x=ReviewRating)) + geom_bar()
 
 # Chi-square Test
@@ -109,7 +83,7 @@ customers_new <- data_frame(customers$RetailerName.cov,
                             customers$UserGender.cov,
                             customers$UserOccupation.cov,
                             customers$ManufacturerRebate.cov,
-                            customers$ProductPrice,
+                            customers$ProductPrice.fix,
                             customers$UserAge,
                             customers$ReviewRating
                             )
@@ -118,7 +92,3 @@ cor_matrix <- cor(customers_new)
 # 画出相关性矩阵
 library(corrplot)
 corrplot(cor_matrix)
-
-
-
-
