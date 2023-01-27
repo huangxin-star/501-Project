@@ -85,64 +85,40 @@ UserOccupation <- table(subset_data)
 chisq.test(UserOccupation, correct=F)
 
 
-## Assignment2 PartB
-male <- length(which(customers$UserGender=='Male'))
-female <- length(which(customers$UserGender=='Female'))
-sex <- read_excel("data/sex.xlsx")
-# EDA（这里我会接着补充）
-p <- ggplot(sex,aes((sex),number))
-p+geom_bar(stat = 'identity',aes(fill=sex))
-
 
 # convert category data to numerical data
-# 1. ProductCategory
-productCategory_one <- customers$ProductCategory == 'TV'
-customers[productCategory_one, "ProductCategory.fix"] <- 1
-productCategory_two <- customers$ProductCategory == 'Tablet'
-customers[productCategory_two, "ProductCategory.fix"] <- 2
-productCategory_three <- customers$ProductCategory == 'Smart Phone'
-customers[productCategory_three, "ProductCategory.fix"] <- 3
-productCategory_four <- customers$ProductCategory == 'Laptop'
-customers[productCategory_four, "ProductCategory.fix"] <- 4
+customers$RetailerName.cov <- as.numeric(factor(customers$RetailerName))
+customers$ManufacturerName.cov <-  as.numeric(factor(customers$ManufacturerName))
+customers$ProductModelName.cov <- as.numeric(factor(customers$ProductModelName))
+customers$ProductCategory.cov <- as.numeric(factor(customers$ProductCategory))
+customers$RetailerCity.cov <- as.numeric(factor(customers$RetailerCity))
+customers$RetailerState.cov <- as.numeric(factor(customers$RetailerState))
+customers$ProductOnSale.cov <- as.numeric(factor(customers$ProductOnSale))
+customers$UserGender.cov <- as.numeric(factor(customers$UserGender))
+customers$UserOccupation.cov <- as.numeric(factor(customers$UserOccupation))
+customers$ManufacturerRebate.cov <- as.numeric(factor(customers$ManufacturerRebate))
 
-# 2. UserGender
-UserGender_one <- customers$UserGender == 'Male'
-customers[UserGender_one, "UserGender.fix"] <- 1
-UserGender_two <- customers$UserGender == 'Female'
-customers[UserGender_two, "UserGender.fix"] <- 2
+# new dataframe including all numerical data
+customers_new <- data_frame(customers$RetailerName.cov,
+                            customers$ManufacturerName.cov,
+                            customers$ProductModelName.cov,
+                            customers$ProductCategory.cov,
+                            customers$RetailerCity.cov,
+                            customers$RetailerState.cov,
+                            customers$ProductOnSale.cov,
+                            customers$UserGender.cov,
+                            customers$UserOccupation.cov,
+                            customers$ManufacturerRebate.cov,
+                            customers$ProductPrice,
+                            customers$UserAge,
+                            customers$ReviewRating
+                            )
+# 生成相关性矩阵
+cor_matrix <- cor(customers_new)
+# 画出相关性矩阵
+library(corrplot)
+corrplot(cor_matrix)
 
-# 3.UserOccuption
-customers$UserOccupation <- str_to_title(customers$UserOccupation)
-UserOccupation_one <- customers$UserOccupation == 'Manager'
-customers[UserOccupation_one, "UserOccupation.fix"] <- 1
-UserOccupation_two <- customers$UserOccupation == 'Secretary'
-customers[UserOccupation_two, "UserOccupation.fix"] <- 2
-UserOccupation_three <- customers$UserOccupation == 'Programmer'
-customers[UserOccupation_three, "UserOccupation.fix"] <- 3
-UserOccupation_four <- customers$UserOccupation == 'Student'
-customers[UserOccupation_four, "UserOccupation.fix"] <- 4
-UserOccupation_five <- customers$UserOccupation == 'Accountant'
-customers[UserOccupation_five, "UserOccupation.fix"] <- 5
-UserOccupation_six <- customers$UserOccupation == 'Unknown'
-customers[UserOccupation_six, "UserOccupation.fix"] <- 0
 
-# 4.ManufacturerName
-ManufacturerName_one <- customers$ManufacturerName == 'Samsung'
-customers[ManufacturerName_one, "ManufacturerName.fix"] <- 1
-ManufacturerName_two <- customers$ManufacturerName == 'Microsoft'
-customers[ManufacturerName_two, "ManufacturerName.fix"] <- 2
-ManufacturerName_three <- customers$ManufacturerName == 'HP'
-customers[ManufacturerName_three, "ManufacturerName.fix"] <- 3
-ManufacturerName_four <- customers$ManufacturerName == 'Apple'
-customers[ManufacturerName_four, "ManufacturerName.fix"] <- 4
-ManufacturerName_five <- customers$ManufacturerName == 'Dell'
-customers[ManufacturerName_five, "ManufacturerName.fix"] <- 5
-ManufacturerName_six <- customers$ManufacturerName == 'LG'
-customers[ManufacturerName_six, "ManufacturerName.fix"] <- 6
-table <- data.frame(customers$ProductCategory.fix,
-                    customers$ProductPrice,
-                    customers$ManufacturerName.fix,
-                    customers$UserOccupation.fix,
-                    customers$ReviewRating,
-                    customers$UserGender.fix)
+
 
